@@ -10,7 +10,7 @@ const Homepage: React.FunctionComponent<IHomepageProps> = (props) => {
         display={'flex'}
         background="black"
         padding={6}
-        backgroundImage={'../public/toa-heftiba-y04kaycRhL4-unsplash.jpg'}
+        backgroundImage={'../toa-heftiba-y04kaycRhL4-unsplash.jpg'}
         backgroundSize={'cover'}
         backgroundPosition={'center'}
         rounded="lg"
