@@ -8,20 +8,16 @@ import {
   useToast,
   InputGroup,
   FormLabel,
-  Link,
-  Text,
-  Box,
   Center,
   Icon,
-  Flex,
 } from '@chakra-ui/react';
-import { ArrowForwardIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import {ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import axios from 'axios';
 
-const Register = () => {
+const ResetPass = () => {
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [show, setShow] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
@@ -29,7 +25,7 @@ const Register = () => {
 
   const submitHandler = async () => {
     setLoading(true);
-    if (!email || !password) {
+    if (!newPassword || !confirmPassword) {
       toast({
         title: 'Please Fill all the Fields',
         status: 'warning',
@@ -46,13 +42,11 @@ const Register = () => {
           'Content-type': 'application/json',
         },
       };
-
-      const response = await axios.post(
-        'http://localhost:5000/api/v1/auth/register',
-        { email, password },
+      await axios.post(
+        '/api/v1/auth/reset-password',
+        { newPassword, confirmPassword },
         config,
       );
-      console.log(response);
       toast({
         title: 'Registration successful',
         status: 'success',
@@ -63,7 +57,6 @@ const Register = () => {
 
       setLoading(false);
     } catch (error) {
-      console.log(error);
       toast({
         title: 'Error occured',
         description: 'hi',
@@ -79,16 +72,18 @@ const Register = () => {
     <VStack spacing={4}>
       <Center width={{ base: '100%', sm: '70%' }}>
         <FormControl>
-          <FormLabel fontSize="3rem">Sign Up</FormLabel>
+          <FormLabel fontSize="3rem">Reset Password</FormLabel>
           <Input
-            placeholder="Enter your email"
-            onChange={({ target }) => setEmail(target.value)}
+            type={show ? 'text' : 'password'}
+            placeholder="Enter your new password"
+            onChange={({ target }) => setNewPassword(target.value)}
+            mb={2}
           ></Input>
           <InputGroup style={{ marginTop: 10 }}>
             <Input
               type={show ? 'text' : 'password'}
-              placeholder="Enter your password"
-              onChange={({ target }) => setPassword(target.value)}
+              placeholder="Confirm your new password"
+              onChange={({ target }) => setConfirmPassword(target.value)}
             ></Input>
             <InputRightElement width={'4rem'}>
               <Button size={'sm'} onClick={handleClick} background={'white'}>
@@ -103,23 +98,12 @@ const Register = () => {
             onClick={submitHandler}
             isLoading={loading}
           >
-            Sign Up
+            Reset Password
           </Button>
-          <Box mt={6} textAlign="center">
-            <Text fontSize="sm" fontWeight="semibold" color="gray.300" mb={2}>
-              ——————————— or ———————————
-            </Text>
-            <Flex alignItems="center" justifyContent="center">
-              <Link href="#" color="grey" fontWeight="semibold" fontSize="md">
-                Already have an account? Sign In
-              </Link>
-              <ArrowForwardIcon ml={2} color="grey" />
-            </Flex>
-          </Box>
         </FormControl>
       </Center>
     </VStack>
   );
 };
 
-export default Register;
+export default ResetPass;
