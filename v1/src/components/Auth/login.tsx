@@ -18,7 +18,7 @@ import {
 import { ArrowForwardIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import axios from 'axios';
 
-const Register = () => {
+const Login = () => {
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -46,13 +46,7 @@ const Register = () => {
           'Content-type': 'application/json',
         },
       };
-
-      const response = await axios.post(
-        'http://localhost:5000/api/v1/auth/register',
-        { email, password },
-        config,
-      );
-      console.log(response);
+      await axios.post('/api/v1/auth/login', { email, password }, config);
       toast({
         title: 'Registration successful',
         status: 'success',
@@ -63,7 +57,6 @@ const Register = () => {
 
       setLoading(false);
     } catch (error) {
-      console.log(error);
       toast({
         title: 'Error occured',
         description: 'hi',
@@ -79,7 +72,7 @@ const Register = () => {
     <VStack spacing={4}>
       <Center width={{ base: '100%', sm: '70%' }}>
         <FormControl>
-          <FormLabel fontSize="3rem">Sign Up</FormLabel>
+          <FormLabel fontSize="3rem">Sign In</FormLabel>
           <Input
             placeholder="Enter your email"
             onChange={({ target }) => setEmail(target.value)}
@@ -103,7 +96,7 @@ const Register = () => {
             onClick={submitHandler}
             isLoading={loading}
           >
-            Sign Up
+            Sign In
           </Button>
           <Box mt={6} textAlign="center">
             <Text fontSize="sm" fontWeight="semibold" color="gray.300" mb={2}>
@@ -111,7 +104,7 @@ const Register = () => {
             </Text>
             <Flex alignItems="center" justifyContent="center">
               <Link href="#" color="grey" fontWeight="semibold" fontSize="md">
-                Already have an account? Sign In
+                Don't have an account? Sign Up
               </Link>
               <ArrowForwardIcon ml={2} color="grey" />
             </Flex>
@@ -122,4 +115,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default Login;
