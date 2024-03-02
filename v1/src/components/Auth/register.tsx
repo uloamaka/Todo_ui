@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { ArrowForwardIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 const Register = () => {
   const [show, setShow] = useState(false);
@@ -25,7 +26,12 @@ const Register = () => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
+  const history = useHistory();
   const handleClick = () => setShow(!show);
+
+  const redirectToSignIn = () => {
+    history.push('/login');
+  };
 
   const submitHandler = async () => {
     setLoading(true);
@@ -54,19 +60,20 @@ const Register = () => {
       );
       console.log(response);
       toast({
-        title: 'Registration successful',
+        title: 'Welcome To Zeit!',
         status: 'success',
         duration: 5000,
         isClosable: true,
         position: 'top-right',
       });
-
+      localStorage.setItem('userInfo', JSON.stringify(response.data));
       setLoading(false);
-    } catch (error) {
-      console.log(error);
+      history.push('/todo');
+    } catch (error: any) {
       toast({
         title: 'Error occured',
-        description: 'hi',
+        description:
+          error.response?.data.message || 'Opps something went wrong!',
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -110,7 +117,12 @@ const Register = () => {
               ——————————— or ———————————
             </Text>
             <Flex alignItems="center" justifyContent="center">
-              <Link href="#" color="grey" fontWeight="semibold" fontSize="md">
+              <Link
+                onClick={redirectToSignIn}
+                color="grey"
+                fontWeight="semibold"
+                fontSize="md"
+              >
                 Already have an account? Sign In
               </Link>
               <ArrowForwardIcon ml={2} color="grey" />

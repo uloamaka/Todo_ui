@@ -34,7 +34,11 @@ const ForgetPass = () => {
           'Content-type': 'application/json',
         },
       };
-      await axios.post('/api/v1/auth/forget-password', { email }, config);
+      await axios.post(
+        'http://localhost:5000/api/v1/auth/forget-password',
+        { email },
+        config,
+      );
       toast({
         title: 'Reset Email sent successful',
         status: 'success',
@@ -44,10 +48,11 @@ const ForgetPass = () => {
       });
 
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: 'Error occured',
-        description: 'hi',
+        description:
+          error.response?.data.message || 'Opps something went wrong!',
         status: 'error',
         duration: 5000,
         isClosable: true,

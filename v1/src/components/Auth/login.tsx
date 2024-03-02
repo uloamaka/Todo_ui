@@ -17,6 +17,7 @@ import {
 } from '@chakra-ui/react';
 import { ArrowForwardIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 const Login = () => {
   const [show, setShow] = useState(false);
@@ -24,8 +25,12 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useToast();
-
+  const history = useHistory();
   const handleClick = () => setShow(!show);
+
+  const redirectToSignUp = () => {
+    history.push('/register');
+  };
 
   const submitHandler = async () => {
     setLoading(true);
@@ -46,20 +51,27 @@ const Login = () => {
           'Content-type': 'application/json',
         },
       };
-      await axios.post('/api/v1/auth/login', { email, password }, config);
+      const response = await axios.post(
+        'http://localhost:5000/api/v1/auth/login',
+        { email, password },
+        config,
+      );
       toast({
-        title: 'Registration successful',
+        title: 'Welcome Back To Productivity!',
         status: 'success',
         duration: 5000,
         isClosable: true,
         position: 'top-right',
       });
-
+      localStorage.setItem('userInfo', JSON.stringify(response.data));
       setLoading(false);
-    } catch (error) {
+      history.push('/todo');
+    } catch (error: any) {
+      console.log(error);
       toast({
         title: 'Error occured',
-        description: 'hi',
+        description:
+          error.response?.data.message || 'Opps something went wrong!',
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -103,7 +115,12 @@ const Login = () => {
               ——————————— or ———————————
             </Text>
             <Flex alignItems="center" justifyContent="center">
-              <Link href="#" color="grey" fontWeight="semibold" fontSize="md">
+              <Link
+                onClick={redirectToSignUp}
+                color="grey"
+                fontWeight="semibold"
+                fontSize="md"
+              >
                 Don't have an account? Sign Up
               </Link>
               <ArrowForwardIcon ml={2} color="grey" />
