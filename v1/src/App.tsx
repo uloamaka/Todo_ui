@@ -6,6 +6,7 @@ import RegisterPage from './pages/Register';
 import LoginPage from './pages/Login';
 import ForgetPassPage from './pages/ForgetPass';
 import ResetPassPage from './pages/ResetPass';
+import TodoPage from './pages/Todo';
 
 function App() {
   // const [count, setCount] = useState(0)
@@ -17,6 +18,7 @@ function App() {
       <Route path="/login" component={LoginPage}></Route>
       <Route path="/forget-password" component={ForgetPassPage}></Route>
       <Route path="/reset-password" component={ResetPassPage}></Route>
+      <Route path="/todo" component={TodoPage}></Route>
     </div>
   );
 }

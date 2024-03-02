@@ -11,7 +11,7 @@ import {
   Center,
   Icon,
 } from '@chakra-ui/react';
-import {ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import axios from 'axios';
 
 const ResetPass = () => {
@@ -43,7 +43,7 @@ const ResetPass = () => {
         },
       };
       await axios.post(
-        '/api/v1/auth/reset-password',
+        'http://localhost:5000/api/v1/auth/reset-password',
         { newPassword, confirmPassword },
         config,
       );
@@ -56,10 +56,11 @@ const ResetPass = () => {
       });
 
       setLoading(false);
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: 'Error occured',
-        description: 'hi',
+        description:
+          error.response?.data.message || 'Opps something went wrong!',
         status: 'error',
         duration: 5000,
         isClosable: true,

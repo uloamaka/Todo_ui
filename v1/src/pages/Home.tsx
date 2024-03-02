@@ -1,8 +1,21 @@
 import * as React from 'react';
 import { Flex, Box, Button, Link, Heading, Text } from '@chakra-ui/react';
+import { useHistory } from 'react-router-dom';
+import { ArrowForwardIcon } from '@chakra-ui/icons';
+
 interface IHomepageProps {}
 
 const Homepage: React.FunctionComponent<IHomepageProps> = (props) => {
+  const history = useHistory();
+
+  const submitHandler = async () => {
+    history.push('/login');
+  };
+
+  const redirectToSignUp = () => {
+    history.push('/register');
+  };
+
   return (
     <Flex color="white" minHeight={'100vh'} padding={0} border={0}>
       <Box
@@ -40,11 +53,27 @@ const Homepage: React.FunctionComponent<IHomepageProps> = (props) => {
           colorScheme="yellow"
           variant="solid"
           width={{ base: '100%', sm: '80%' }}
+          onClick={submitHandler}
         >
           Get Started
         </Button>
-        <br />
-        <Link href="#">Already have an account? sign in</Link>
+        <Box mt={6} textAlign="center">
+          <Text fontSize="sm" fontWeight="semibold" color="gray.300" mb={2}>
+            ——————————— or ———————————
+          </Text>
+          <Flex alignItems="center" justifyContent="center">
+            <Link
+              onClick={redirectToSignUp}
+              color="grey"
+              fontWeight="semibold"
+              fontSize="md"
+              cursor="pointer" // Set cursor to pointer for better UX
+            >
+              Don't have an account? Sign Up
+            </Link>
+            <ArrowForwardIcon ml={2} color="grey" />
+          </Flex>
+        </Box>
       </Box>
     </Flex>
   );
