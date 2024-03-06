@@ -13,12 +13,14 @@ import {
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 const ResetPass = () => {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const history = useHistory();
   const toast = useToast();
 
   const handleClick = () => setShow(!show);
@@ -48,7 +50,7 @@ const ResetPass = () => {
         config,
       );
       toast({
-        title: 'Registration successful',
+        title: 'Password reset success',
         status: 'success',
         duration: 5000,
         isClosable: true,
@@ -56,6 +58,7 @@ const ResetPass = () => {
       });
 
       setLoading(false);
+      history.push('/login');
     } catch (error: any) {
       toast({
         title: 'Error occured',
@@ -73,7 +76,7 @@ const ResetPass = () => {
     <VStack spacing={4}>
       <Center width={{ base: '100%', sm: '70%' }}>
         <FormControl>
-          <FormLabel fontSize="3rem">Reset Password</FormLabel>
+          <FormLabel fontSize="2.5rem">Reset Password</FormLabel>
           <Input
             type={show ? 'text' : 'password'}
             placeholder="Enter your new password"

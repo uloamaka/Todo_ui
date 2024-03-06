@@ -14,6 +14,8 @@ import {
   Center,
   Icon,
   Flex,
+  Divider,
+  AbsoluteCenter,
 } from '@chakra-ui/react';
 import { ArrowForwardIcon, ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import axios from 'axios';
@@ -112,10 +114,13 @@ const Register = () => {
           >
             Sign Up
           </Button>
-          <Box mt={6} textAlign="center">
-            <Text fontSize="sm" fontWeight="semibold" color="gray.300" mb={2}>
-              ——————————— or ———————————
-            </Text>
+          <Box textAlign="center">
+            <Box position="relative" padding="10">
+              <Divider />
+              <AbsoluteCenter bg="white" px="4" color="gray.300">
+                or
+              </AbsoluteCenter>
+            </Box>
             <Flex alignItems="center" justifyContent="center">
               <Link
                 onClick={redirectToSignIn}

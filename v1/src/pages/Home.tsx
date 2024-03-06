@@ -1,5 +1,14 @@
 import * as React from 'react';
-import { Flex, Box, Button, Link, Heading, Text } from '@chakra-ui/react';
+import {
+  Flex,
+  Box,
+  Button,
+  Link,
+  Heading,
+  Text,
+  Divider,
+  AbsoluteCenter,
+} from '@chakra-ui/react';
 import { useHistory } from 'react-router-dom';
 import { ArrowForwardIcon } from '@chakra-ui/icons';
 
@@ -57,10 +66,13 @@ const Homepage: React.FunctionComponent<IHomepageProps> = (props) => {
         >
           Get Started
         </Button>
-        <Box mt={6} textAlign="center">
-          <Text fontSize="sm" fontWeight="semibold" color="gray.300" mb={2}>
-            ——————————— or ———————————
-          </Text>
+        <Box textAlign="center">
+          <Box position="relative" padding="10">
+            <Divider />
+            <AbsoluteCenter bg="white" px="4" color="gray.300">
+              or
+            </AbsoluteCenter>
+          </Box>
           <Flex alignItems="center" justifyContent="center">
             <Link
               onClick={redirectToSignUp}

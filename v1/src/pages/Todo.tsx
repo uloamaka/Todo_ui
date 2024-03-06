@@ -3,11 +3,7 @@ import Main from '../components/Todo';
 interface ITodoPageProps {}
 
 const TodoPage: React.FunctionComponent<ITodoPageProps> = (props) => {
-  return (
-    <div>
-      <Main />
-    </div>
-  );
+  return <Main />;
 };
 
 export default TodoPage;

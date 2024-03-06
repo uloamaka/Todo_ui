@@ -17,7 +17,10 @@ function App() {
       <Route path="/register" component={RegisterPage}></Route>
       <Route path="/login" component={LoginPage}></Route>
       <Route path="/forget-password" component={ForgetPassPage}></Route>
-      <Route path="/reset-password" component={ResetPassPage}></Route>
+      <Route
+        path="/api/v1/auth/reset-password/:userId/:resetToken"
+        component={ResetPassPage}
+      ></Route>
       <Route path="/todo" component={TodoPage}></Route>
     </div>
   );

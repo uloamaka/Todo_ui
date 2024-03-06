@@ -65,7 +65,7 @@ const ForgetPass = () => {
     <VStack spacing={4}>
       <Center width={{ base: '100%', sm: '70%' }}>
         <FormControl>
-          <FormLabel fontSize="3rem"> Forgot Password </FormLabel>
+          <FormLabel fontSize="2.5rem"> Forgot Password </FormLabel>
           <Input
             placeholder="Enter your email"
             onChange={({ target }) => setEmail(target.value)}
