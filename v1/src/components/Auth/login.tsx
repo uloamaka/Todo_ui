@@ -57,7 +57,7 @@ const Login = () => {
         },
       };
       const response = await axios.post(
-        'http://localhost:5000/api/v1/auth/login',
+        '/api/v1/auth/login',
         { email, password },
         config,
       );
@@ -68,6 +68,7 @@ const Login = () => {
         isClosable: true,
         position: 'top-right',
       });
+      console.log(response)
       localStorage.setItem('userInfo', JSON.stringify(response.data));
       setLoading(false);
       history.push('/todo');

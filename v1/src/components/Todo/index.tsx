@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Flex,
@@ -10,6 +10,9 @@ import {
   FormLabel,
   Select,
   Textarea,
+  useToast,
+  FormHelperText,
+  FormControl,
 } from '@chakra-ui/react';
 import {
   Drawer,
@@ -22,12 +25,71 @@ import {
 import { useDisclosure } from '@chakra-ui/hooks';
 import axios from 'axios';
 import { AddIcon, ArrowRightIcon, DragHandleIcon } from '@chakra-ui/icons';
+import { useHistory } from 'react-router-dom';
 
 const main = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef: any = React.useRef();
-  const firstField: any = React.useRef();
+  // const firstField: any = React.useRef();
 
+  const [category, setCategory] = useState('default')
+  const [content, setContent] = useState('')
+  const [status, setStatus] = useState('pending')
+  const [due_date, setDue_date] = useState('')
+
+  const [loading, setLoading] = useState(false);
+  // const history = useHistory();
+  const toast = useToast();
+
+  const submitTask = async () => {
+    setLoading(true);
+    if (!content) {
+      toast({
+        title: 'Please Fill all the Fields',
+        status: 'warning',
+        duration: 5000,
+        isClosable: true,
+        position: 'top-right',
+      });
+      setLoading(false);
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          'Content-type': 'application/json',
+        },
+        withCredentials: true,
+      };
+      console.log( category, content, status, due_date, )
+      await axios.post(
+        '/api/v1/todo/create',
+        { category, content, status, due_date, },
+        config,
+      );
+      toast({
+        title: 'Task created successfully',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+        position: 'top-right',
+      });
+
+      setLoading(false);
+      // history.push('/login');
+    } catch (error: any) {
+      toast({
+        title: 'Error occured',
+        description:
+          error.response?.data.message || 'Opps something went wrong!',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'top-right',
+      });
+      setLoading(false);
+    }
+  }
   return (
     <Flex minHeight={'100vh'} padding={0} border={0}>
       <Box
@@ -81,6 +143,7 @@ const main = () => {
         >
           Add New Task
         </Button>
+
         <Drawer
           isOpen={isOpen}
           placement="right"
@@ -98,12 +161,13 @@ const main = () => {
                 <Textarea
                   id="content"
                   placeholder="Enter task details"
+                  onChange={({ target }) => setContent(target.value)}
                   resize="none"
                 />
               </Box>
               <Box>
-                <FormLabel htmlFor="category">Category: </FormLabel>
-                <Select id="category" defaultValue="default">
+                <FormLabel htmlFor="category" >Category: </FormLabel>
+                <Select id="category" onChange={({ target }) => setCategory(target.value)} defaultValue="default">
                   <option value="personal">Personal</option>
                   <option value="shopping">Shopping</option>
                   <option value="wishlist">Wishlist</option>
@@ -112,12 +176,15 @@ const main = () => {
                 </Select>
               </Box>
               <Box>
+                <FormControl>
                 <FormLabel htmlFor="due-date">Due Date:</FormLabel>
-                <Input type="date" id="dueDate" />
+                <Input type="date" id="due-date" onChange={({ target }) => setDue_date(target.value)} />
+                  <FormHelperText> If not manually changed, it will be automatically set to 7 days ahead.</FormHelperText>
+                  </FormControl>
               </Box>
               <Box>
                 <FormLabel htmlFor="status">Status:</FormLabel>
-                <Select id="status" defaultValue="pending">
+                <Select id="status" defaultValue={'pending'} onChange={({ target }) => setStatus(target.value)} >
                   <option value="pending">Pending</option>
                   <option value="completed">Completed</option>
                 </Select>
@@ -127,7 +194,11 @@ const main = () => {
               <Button variant="outline" mr={3} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="blue">Save</Button>
+              <Button
+                colorScheme="yellow"
+                onClick={submitTask}
+                isLoading={loading}
+              >Create</Button>
             </DrawerFooter>
           </DrawerContent>
         </Drawer>

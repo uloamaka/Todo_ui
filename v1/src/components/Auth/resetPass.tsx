@@ -45,7 +45,7 @@ const ResetPass = () => {
         },
       };
       await axios.post(
-        'http://localhost:5000/api/v1/auth/reset-password',
+        '/api/v1/auth/reset-password',
         { newPassword, confirmPassword },
         config,
       );
