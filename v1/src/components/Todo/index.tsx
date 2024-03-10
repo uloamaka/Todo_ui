@@ -25,20 +25,18 @@ import {
 import { useDisclosure } from '@chakra-ui/hooks';
 import axios from 'axios';
 import { AddIcon, ArrowRightIcon, DragHandleIcon } from '@chakra-ui/icons';
-import { useHistory } from 'react-router-dom';
+
 
 const main = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef: any = React.useRef();
-  // const firstField: any = React.useRef();
 
-  const [category, setCategory] = useState('default')
-  const [content, setContent] = useState('')
-  const [status, setStatus] = useState('pending')
-  const [due_date, setDue_date] = useState('')
+  const [category, setCategory] = useState('default');
+  const [content, setContent] = useState('');
+  const [status, setStatus] = useState('pending');
+  const [due_date, setDue_date] = useState('');
 
   const [loading, setLoading] = useState(false);
-  // const history = useHistory();
   const toast = useToast();
 
   const submitTask = async () => {
@@ -61,10 +59,10 @@ const main = () => {
         },
         withCredentials: true,
       };
-      console.log( category, content, status, due_date, )
+      console.log(category, content, status, due_date);
       await axios.post(
         '/api/v1/todo/create',
-        { category, content, status, due_date, },
+        { category, content, status, due_date },
         config,
       );
       toast({
@@ -76,7 +74,9 @@ const main = () => {
       });
 
       setLoading(false);
-      // history.push('/login');
+      setTimeout(() => {
+        onClose();
+      }, 1000);
     } catch (error: any) {
       toast({
         title: 'Error occured',
@@ -89,7 +89,7 @@ const main = () => {
       });
       setLoading(false);
     }
-  }
+  };
   return (
     <Flex minHeight={'100vh'} padding={0} border={0}>
       <Box
@@ -166,8 +166,12 @@ const main = () => {
                 />
               </Box>
               <Box>
-                <FormLabel htmlFor="category" >Category: </FormLabel>
-                <Select id="category" onChange={({ target }) => setCategory(target.value)} defaultValue="default">
+                <FormLabel htmlFor="category">Category: </FormLabel>
+                <Select
+                  id="category"
+                  onChange={({ target }) => setCategory(target.value)}
+                  defaultValue="default"
+                >
                   <option value="personal">Personal</option>
                   <option value="shopping">Shopping</option>
                   <option value="wishlist">Wishlist</option>
@@ -177,14 +181,26 @@ const main = () => {
               </Box>
               <Box>
                 <FormControl>
-                <FormLabel htmlFor="due-date">Due Date:</FormLabel>
-                <Input type="date" id="due-date" onChange={({ target }) => setDue_date(target.value)} />
-                  <FormHelperText> If not manually changed, it will be automatically set to 7 days ahead.</FormHelperText>
-                  </FormControl>
+                  <FormLabel htmlFor="due-date">Due Date:</FormLabel>
+                  <Input
+                    type="date"
+                    id="due-date"
+                    onChange={({ target }) => setDue_date(target.value)}
+                  />
+                  <FormHelperText>
+                    {' '}
+                    If not manually changed, it will be automatically set to 7
+                    days ahead.
+                  </FormHelperText>
+                </FormControl>
               </Box>
               <Box>
                 <FormLabel htmlFor="status">Status:</FormLabel>
-                <Select id="status" defaultValue={'pending'} onChange={({ target }) => setStatus(target.value)} >
+                <Select
+                  id="status"
+                  defaultValue={'pending'}
+                  onChange={({ target }) => setStatus(target.value)}
+                >
                   <option value="pending">Pending</option>
                   <option value="completed">Completed</option>
                 </Select>
@@ -198,7 +214,9 @@ const main = () => {
                 colorScheme="yellow"
                 onClick={submitTask}
                 isLoading={loading}
-              >Create</Button>
+              >
+                Create
+              </Button>
             </DrawerFooter>
           </DrawerContent>
         </Drawer>

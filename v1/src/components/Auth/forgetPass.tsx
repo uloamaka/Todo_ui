@@ -34,11 +34,7 @@ const ForgetPass = () => {
           'Content-type': 'application/json',
         },
       };
-      await axios.post(
-        '/api/v1/auth/forget-password',
-        { email },
-        config,
-      );
+      await axios.post('/api/v1/auth/forget-password', { email }, config);
       toast({
         title: 'Reset Email sent successful',
         status: 'success',

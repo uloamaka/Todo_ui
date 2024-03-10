@@ -68,7 +68,7 @@ const Login = () => {
         isClosable: true,
         position: 'top-right',
       });
-      console.log(response)
+      console.log(response);
       localStorage.setItem('userInfo', JSON.stringify(response.data));
       setLoading(false);
       history.push('/todo');
