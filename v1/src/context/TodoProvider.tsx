@@ -12,6 +12,8 @@ interface TodoContextProps {
   setUser: React.Dispatch<React.SetStateAction<any>>;
   todo: any[];
   setTodo: React.Dispatch<React.SetStateAction<any[]>>;
+  selectedTask: any;
+  setSetselectedTask: React.Dispatch<React.SetStateAction<any>>;
 }
 
 const TodoContext = createContext<TodoContextProps | undefined>(undefined);
@@ -20,7 +22,7 @@ const TodoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const history = useHistory();
   const [user, setUser] = useState<any | null>(null);
   const [todo, setTodo] = useState<any[]>([]);
-
+  const [selectedTask, setSetselectedTask] = useState<any | null>(null);
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem('userInfo') || 'null');
     setUser(userInfo);
@@ -31,7 +33,9 @@ const TodoProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   }, [history]);
 
   return (
-    <TodoContext.Provider value={{ user, setUser, todo, setTodo }}>
+    <TodoContext.Provider
+      value={{ user, setUser, todo, setTodo, selectedTask, setSetselectedTask }}
+    >
       {children}
     </TodoContext.Provider>
   );
