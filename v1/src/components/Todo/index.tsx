@@ -13,7 +13,6 @@ import {
   useToast,
   FormHelperText,
   FormControl,
-  Spacer,
 } from '@chakra-ui/react';
 import {
   Drawer,
@@ -50,91 +49,6 @@ const main = () => {
       };
       const { data } = await axios.get('/api/v1/todo', config);
       setTodo(data.data.results);
-      setLoading(false);
-    } catch (error: any) {
-      toast({
-        title: 'Error occured',
-        description:
-          error.response?.data.message || 'Opps something went wrong!',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'top-right',
-      });
-      setLoading(false);
-    }
-  };
-  const fetchTaskByID = async () => {
-    setLoading(true);
-    if (!selectedTask) return;
-    try {
-      const config = {
-        headers: {
-          'Content-type': 'application/json',
-        },
-        withCredentials: true,
-      };
-      const { data } = await axios.get(
-        `/api/v1/todo/${selectedTask._id}`,
-        config,
-      );
-      console.log(data);
-      setTodo(data);
-      setLoading(false);
-    } catch (error: any) {
-      toast({
-        title: 'Error occured',
-        description:
-          error.response?.data.message || 'Opps something went wrong!',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'top-right',
-      });
-      setLoading(false);
-    }
-  };
-  const updateTask = async () => {
-    setLoading(true);
-    if (!selectedTask) return;
-    try {
-      const config = {
-        headers: {
-          'Content-type': 'application/json',
-        },
-        withCredentials: true,
-      };
-      const { data } = await axios.get(
-        `/api/v1/todo/${selectedTask._id}/edit`,
-        config,
-      );
-      console.log(data);
-      setTodo(data);
-      setLoading(false);
-    } catch (error: any) {
-      toast({
-        title: 'Error occured',
-        description:
-          error.response?.data.message || 'Opps something went wrong!',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'top-right',
-      });
-      setLoading(false);
-    }
-  };
-  const deleteTask = async () => {
-    setLoading(true);
-    if (!selectedTask) return;
-    try {
-      const config = {
-        headers: {
-          'Content-type': 'application/json',
-        },
-        withCredentials: true,
-      };
-      await axios.get(`/api/v1/todo/${selectedTask._id}/delete`, config);
       setLoading(false);
     } catch (error: any) {
       toast({

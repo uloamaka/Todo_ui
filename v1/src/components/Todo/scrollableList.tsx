@@ -4,7 +4,6 @@ import {
   Box,
   Text,
   Tooltip,
-  Divider,
   Drawer,
   DrawerOverlay,
   DrawerContent,
@@ -16,16 +15,15 @@ import {
   Select,
   FormControl,
   Input,
-  FormHelperText,
   DrawerFooter,
   Flex,
   Button,
   useToast,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 import ScrollableFeed from 'react-scrollable-feed';
 import { useTodoState } from '../../context/TodoProvider';
+import axios from 'axios';
 
 type Props = {
   task: any[];
@@ -33,7 +31,7 @@ type Props = {
 
 const ScrollableList: React.FC<Props> = ({ task }) => {
   //   const { isOpen, onOpen, onClose } = useDisclosure();
-  //   const { todo, setTodo, selectedTask, setSetselectedTask } = useTodoState();
+  const { todo, setTodo, selectedTask, setSetselectedTask } = useTodoState();
 
   const [category, setCategory] = useState('default');
   const [content, setContent] = useState('');
@@ -56,6 +54,69 @@ const ScrollableList: React.FC<Props> = ({ task }) => {
     newDrawerStates[index] = false;
     setDrawerStates(newDrawerStates);
   };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
+
+  const updateTask = async () => {
+    setLoading(true);
+    if (!selectedTask) return;
+    try {
+      const config = {
+        headers: {
+          'Content-type': 'application/json',
+        },
+        withCredentials: true,
+      };
+      console.log(category, content, status, due_date);
+      const { data } = await axios.patch(
+        `/api/v1/todo/${selectedTask._id}/edit`,
+        { category, content, status, due_date },
+        config,
+      );
+      console.log(data);
+      setTodo(data);
+      setLoading(false);
+    } catch (error: any) {
+      toast({
+        title: 'Error occured',
+        description:
+          error.response?.data.message || 'Opps something went wrong!',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'top-right',
+      });
+      setLoading(false);
+    }
+  };
+  const deleteTask = async () => {
+    setLoading(true);
+    if (!selectedTask) return;
+    try {
+      const config = {
+        withCredentials: true,
+      };
+      await axios.delete(`/api/v1/todo/${selectedTask._id}/delete`, config);
+      setLoading(false);
+    } catch (error: any) {
+      toast({
+        title: 'Error occured',
+        description:
+          error.response?.data.message || 'Opps something went wrong!',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'top-right',
+      });
+      setLoading(false);
+    }
+  };
   return (
     <Box>
       <ScrollableFeed>
@@ -75,6 +136,7 @@ const ScrollableList: React.FC<Props> = ({ task }) => {
                 openDelay={1000}
                 bg="yellow.400"
                 fontSize="xs"
+                color={'black'}
               >
                 <Text flex="1" onClick={() => openDrawer(index)}>
                   {item.content}
@@ -100,6 +162,7 @@ const ScrollableList: React.FC<Props> = ({ task }) => {
                         placeholder="Enter task details"
                         onChange={({ target }) => setContent(target.value)}
                         resize="none"
+                        defaultValue={item.content}
                       />
                     </Box>
                     <Box>
@@ -107,7 +170,7 @@ const ScrollableList: React.FC<Props> = ({ task }) => {
                       <Select
                         id="category"
                         onChange={({ target }) => setCategory(target.value)}
-                        defaultValue="default"
+                        defaultValue={item.category}
                       >
                         <option value="personal">Personal</option>
                         <option value="shopping">Shopping</option>
@@ -122,20 +185,16 @@ const ScrollableList: React.FC<Props> = ({ task }) => {
                         <Input
                           type="date"
                           id="due-date"
+                          defaultValue={formatDate(item.due_date)}
                           onChange={({ target }) => setDue_date(target.value)}
                         />
-                        <FormHelperText>
-                          {' '}
-                          If not manually changed, it will be automatically set
-                          to 7 days ahead.
-                        </FormHelperText>
                       </FormControl>
                     </Box>
                     <Box>
                       <FormLabel htmlFor="status">Status:</FormLabel>
                       <Select
                         id="status"
-                        defaultValue={'pending'}
+                        defaultValue={item.status}
                         onChange={({ target }) => setStatus(target.value)}
                       >
                         <option value="pending">Pending</option>
@@ -145,10 +204,14 @@ const ScrollableList: React.FC<Props> = ({ task }) => {
                   </Stack>
                   <DrawerFooter borderTopWidth="1px" p={4}>
                     <Flex justifyContent="space-between" width="100%">
-                      <Button variant="outline" mr={3}>
+                      <Button variant="outline" mr={3} onClick={deleteTask}>
                         Delete
                       </Button>
-                      <Button colorScheme="yellow" isLoading={loading}>
+                      <Button
+                        colorScheme="yellow"
+                        isLoading={loading}
+                        onClick={updateTask}
+                      >
                         Save
                       </Button>
                     </Flex>
