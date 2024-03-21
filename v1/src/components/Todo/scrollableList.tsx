@@ -29,7 +29,7 @@ type Props = {
   task: any[];
   fetchTask: any;
 };
-const ScrollableList: React.FC<Props> = ({ task, fetchTask}) => {
+const ScrollableList: React.FC<Props> = ({ task, fetchTask }) => {
   const { todo, setTodo, selectedTask, setSelectedTask } = useTodoState();
 
   const [category, setCategory] = useState('default');
@@ -65,7 +65,7 @@ const ScrollableList: React.FC<Props> = ({ task, fetchTask}) => {
   const updateTask = async () => {
     setLoading(true);
     if (!selectedTask) return;
-    console.log(selectedTask)
+    console.log(selectedTask);
     try {
       const config = {
         headers: {
@@ -80,7 +80,7 @@ const ScrollableList: React.FC<Props> = ({ task, fetchTask}) => {
         config,
       );
       setTodo(data);
-      fetchTask()
+      fetchTask();
       setLoading(false);
     } catch (error: any) {
       toast({
@@ -100,7 +100,7 @@ const ScrollableList: React.FC<Props> = ({ task, fetchTask}) => {
     if (!selectedTask) return;
     try {
       await axios.delete(`/api/v1/todo/${selectedTask._id}/delete`);
-      fetchTask()
+      fetchTask();
       setLoading(false);
     } catch (error: any) {
       toast({
@@ -211,7 +211,7 @@ const ScrollableList: React.FC<Props> = ({ task, fetchTask}) => {
                           deleteTask();
                           closeDrawer(index);
                         }}
-                        >
+                      >
                         Delete
                       </Button>
                       <Button

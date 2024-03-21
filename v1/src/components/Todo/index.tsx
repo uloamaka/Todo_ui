@@ -43,7 +43,7 @@ const main = () => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
-  const page:number = 1
+  const page: number = 1;
   const fetchTask = async () => {
     try {
       const config = {
@@ -53,9 +53,9 @@ const main = () => {
         ...config,
         params: {
           page,
-          status: 'pending'
-        }
-      });    
+          status: 'pending',
+        },
+      });
       setTodo(data.data.docs);
       setLoading(false);
     } catch (error: any) {
@@ -184,7 +184,7 @@ const main = () => {
           </Button>
           {todo ? (
             <>
-              <ScrollableList task={todo} fetchTask={fetchTask}  />
+              <ScrollableList task={todo} fetchTask={fetchTask} />
             </>
           ) : (
             <Loading />
@@ -228,12 +228,12 @@ const main = () => {
                 <Box>
                   <FormControl>
                     <FormLabel htmlFor="due_date">Due Date:</FormLabel>
-                      <Input
-                        type="date"
-                        id="due_date"
-                        value={due_date} 
-                        onChange={({ target }) => setDue_date(target.value)} 
-                      />
+                    <Input
+                      type="date"
+                      id="due_date"
+                      value={due_date}
+                      onChange={({ target }) => setDue_date(target.value)}
+                    />
                     <FormHelperText>
                       If not manually changed, it will be automatically set to 7
                       days ahead.
