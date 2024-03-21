@@ -32,23 +32,31 @@ import ScrollableList from './scrollableList';
 const main = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef: any = React.useRef();
-  const { todo, setTodo, selectedTask, setSetselectedTask } = useTodoState();
+  const { todo, setTodo, selectedTask, setSelectedTask } = useTodoState();
 
-  const [category, setCategory] = useState('default');
-  const [content, setContent] = useState('');
-  const [status, setStatus] = useState('pending');
-  const [due_date, setDue_date] = useState('');
+  // const [fetchAgain, setFetchAgain] = useState(false)
+  const [category, setCategory] = useState<string>('default');
+  const [content, setContent] = useState<string>('');
+  const [status, setStatus] = useState<string>('pending');
+  const [due_date, setDue_date] = useState<string | undefined>(undefined);
 
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
+  const page:number = 1
   const fetchTask = async () => {
     try {
       const config = {
         withCredentials: true,
       };
-      const { data } = await axios.get('/api/v1/todo', config);
-      setTodo(data.data.results);
+      const { data } = await axios.get('/api/v1/todo', {
+        ...config,
+        params: {
+          page,
+          status: 'pending'
+        }
+      });    
+      setTodo(data.data.docs);
       setLoading(false);
     } catch (error: any) {
       toast({
@@ -84,7 +92,6 @@ const main = () => {
         },
         withCredentials: true,
       };
-      console.log(category, content, status, due_date);
       await axios.post(
         '/api/v1/todo/create',
         { category, content, status, due_date },
@@ -117,8 +124,9 @@ const main = () => {
   };
 
   useEffect(() => {
+    // setLoggedUser(JSON.parse(localStorage.getItem("userInfo"))
     fetchTask();
-  }, []);
+  }, [selectedTask]);
 
   return (
     <>
@@ -176,7 +184,7 @@ const main = () => {
           </Button>
           {todo ? (
             <>
-              <ScrollableList task={todo} />
+              <ScrollableList task={todo} fetchTask={fetchTask}  />
             </>
           ) : (
             <Loading />
@@ -219,14 +227,14 @@ const main = () => {
                 </Box>
                 <Box>
                   <FormControl>
-                    <FormLabel htmlFor="due-date">Due Date:</FormLabel>
-                    <Input
-                      type="date"
-                      id="due-date"
-                      onChange={({ target }) => setDue_date(target.value)}
-                    />
+                    <FormLabel htmlFor="due_date">Due Date:</FormLabel>
+                      <Input
+                        type="date"
+                        id="due_date"
+                        value={due_date} 
+                        onChange={({ target }) => setDue_date(target.value)} 
+                      />
                     <FormHelperText>
-                      {' '}
                       If not manually changed, it will be automatically set to 7
                       days ahead.
                     </FormHelperText>

@@ -27,11 +27,10 @@ import axios from 'axios';
 
 type Props = {
   task: any[];
+  fetchTask: any;
 };
-
-const ScrollableList: React.FC<Props> = ({ task }) => {
-  //   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { todo, setTodo, selectedTask, setSetselectedTask } = useTodoState();
+const ScrollableList: React.FC<Props> = ({ task, fetchTask}) => {
+  const { todo, setTodo, selectedTask, setSelectedTask } = useTodoState();
 
   const [category, setCategory] = useState('default');
   const [content, setContent] = useState('');
@@ -66,6 +65,7 @@ const ScrollableList: React.FC<Props> = ({ task }) => {
   const updateTask = async () => {
     setLoading(true);
     if (!selectedTask) return;
+    console.log(selectedTask)
     try {
       const config = {
         headers: {
@@ -74,13 +74,13 @@ const ScrollableList: React.FC<Props> = ({ task }) => {
         withCredentials: true,
       };
       console.log(category, content, status, due_date);
-      const { data } = await axios.patch(
+      const { data } = await axios.put(
         `/api/v1/todo/${selectedTask._id}/edit`,
         { category, content, status, due_date },
         config,
       );
-      console.log(data);
       setTodo(data);
+      fetchTask()
       setLoading(false);
     } catch (error: any) {
       toast({
@@ -99,10 +99,8 @@ const ScrollableList: React.FC<Props> = ({ task }) => {
     setLoading(true);
     if (!selectedTask) return;
     try {
-      const config = {
-        withCredentials: true,
-      };
-      await axios.delete(`/api/v1/todo/${selectedTask._id}/delete`, config);
+      await axios.delete(`/api/v1/todo/${selectedTask._id}/delete`);
+      fetchTask()
       setLoading(false);
     } catch (error: any) {
       toast({
@@ -127,6 +125,7 @@ const ScrollableList: React.FC<Props> = ({ task }) => {
               display="flex"
               alignItems="center"
               color="gray.600"
+              onClick={() => setSelectedTask(item)}
             >
               <Checkbox colorScheme="orange" mr={2} />
               <Tooltip
@@ -204,13 +203,24 @@ const ScrollableList: React.FC<Props> = ({ task }) => {
                   </Stack>
                   <DrawerFooter borderTopWidth="1px" p={4}>
                     <Flex justifyContent="space-between" width="100%">
-                      <Button variant="outline" mr={3} onClick={deleteTask}>
+                      <Button
+                        variant="outline"
+                        mr={3}
+                        isLoading={loading}
+                        onClick={() => {
+                          deleteTask();
+                          closeDrawer(index);
+                        }}
+                        >
                         Delete
                       </Button>
                       <Button
                         colorScheme="yellow"
                         isLoading={loading}
-                        onClick={updateTask}
+                        onClick={() => {
+                          updateTask();
+                          closeDrawer(index);
+                        }}
                       >
                         Save
                       </Button>
