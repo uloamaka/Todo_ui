@@ -8,10 +8,11 @@ const RegisterPage: React.FunctionComponent<IRegisterPageProps> = (props) => {
   return (
     <Flex color="white" minHeight={'100vh'} padding={0} border={0}>
       <Box
-        width="50%"
+        width="45%"
         display={'flex'}
-        background="black"
+        background="white"
         padding={6}
+        margin={2}
         backgroundImage={'../toa-heftiba-y04kaycRhL4-unsplash.jpg'}
         backgroundSize={'cover'}
         backgroundPosition={'center'}
@@ -20,7 +21,7 @@ const RegisterPage: React.FunctionComponent<IRegisterPageProps> = (props) => {
         <Text fontSize="5xl">Zeit</Text>
       </Box>
       <Box
-        width="50%"
+        width="55%"
         background="white"
         padding={10}
         color={'black'}

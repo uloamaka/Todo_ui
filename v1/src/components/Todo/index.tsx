@@ -13,6 +13,7 @@ import {
   useToast,
   FormHelperText,
   FormControl,
+  Divider,
 } from '@chakra-ui/react';
 import {
   Drawer,
@@ -32,18 +33,18 @@ import ScrollableList from './scrollableList';
 const main = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef: any = React.useRef();
-  const { todo, setTodo, selectedTask, setSelectedTask } = useTodoState();
 
-  // const [fetchAgain, setFetchAgain] = useState(false)
+  const { todo, setTodo, selectedTask } = useTodoState();
   const [category, setCategory] = useState<string>('default');
   const [content, setContent] = useState<string>('');
   const [status, setStatus] = useState<string>('pending');
   const [due_date, setDue_date] = useState<string | undefined>(undefined);
-
+  const [maxPages, setMaxPages] = useState<number>(1);
+  const [page, setPage] = useState<number>(1);
   const [loading, setLoading] = useState(false);
+
   const toast = useToast();
 
-  const page: number = 1;
   const fetchTask = async () => {
     try {
       const config = {
@@ -56,19 +57,11 @@ const main = () => {
           status: 'pending',
         },
       });
+      setMaxPages(data.data.totalPages);
       setTodo(data.data.docs);
       setLoading(false);
     } catch (error: any) {
-      toast({
-        title: 'Error occured',
-        description:
-          error.response?.data.message || 'Opps something went wrong!',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'top-right',
-      });
-      setLoading(false);
+      handleFetchError(error);
     }
   };
 
@@ -105,6 +98,7 @@ const main = () => {
         position: 'top-right',
       });
 
+      fetchTask();
       setLoading(false);
       setTimeout(() => {
         onClose();
@@ -121,6 +115,61 @@ const main = () => {
       });
       setLoading(false);
     }
+  };
+
+  const fetchNextPage = async (): Promise<void> => {
+    try {
+      let nextPage;
+      if (page !== maxPages) {
+        nextPage = page + 1;
+      } else {
+        nextPage = page;
+      }
+      const { data } = await axios.get('/api/v1/todo', {
+        withCredentials: true,
+        params: {
+          page: nextPage,
+          status: 'pending',
+        },
+      });
+      setTodo(data.data.docs);
+      setPage(nextPage);
+      setLoading(false);
+    } catch (error: any) {
+      handleFetchError(error);
+    }
+  };
+
+  const fetchPreviousPage = async (): Promise<void> => {
+    try {
+      if (page > 1) {
+        const prevPage = page - 1;
+        const { data } = await axios.get('/api/v1/todo', {
+          withCredentials: true,
+          params: {
+            page: prevPage,
+            status: 'pending',
+          },
+        });
+        setTodo(data.data.docs);
+        setPage(prevPage);
+        setLoading(false);
+      }
+    } catch (error: any) {
+      handleFetchError(error);
+    }
+  };
+
+  const handleFetchError = (error: any): void => {
+    toast({
+      title: 'Error occurred',
+      description: error.response?.data.message || 'Oops something went wrong!',
+      status: 'error',
+      duration: 5000,
+      isClosable: true,
+      position: 'top-right',
+    });
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -185,6 +234,21 @@ const main = () => {
           {todo ? (
             <>
               <ScrollableList task={todo} fetchTask={fetchTask} />
+              <Divider></Divider>
+              <Button
+                background={'white'}
+                color={'black'}
+                onClick={fetchPreviousPage}
+              >
+                Previous Page
+              </Button>
+              <Button
+                background={'white'}
+                color={'black'}
+                onClick={fetchNextPage}
+              >
+                Next Page
+              </Button>
             </>
           ) : (
             <Loading />

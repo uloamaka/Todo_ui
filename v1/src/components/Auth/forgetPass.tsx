@@ -7,14 +7,20 @@ import {
   useToast,
   FormLabel,
   Center,
+  Link,
 } from '@chakra-ui/react';
 import axios from 'axios';
+import { useHistory } from 'react-router-dom';
 
 const ForgetPass = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const history = useHistory();
 
+  const redirectToLogin = () => {
+    history.push('/login');
+  };
   const submitHandler = async () => {
     setLoading(true);
     if (!email) {
@@ -63,6 +69,7 @@ const ForgetPass = () => {
         <FormControl>
           <FormLabel fontSize="2.5rem"> Forgot Password </FormLabel>
           <Input
+            mt={3}
             placeholder="Enter your email"
             onChange={({ target }) => setEmail(target.value)}
           ></Input>
@@ -72,9 +79,20 @@ const ForgetPass = () => {
             style={{ marginTop: 15 }}
             onClick={submitHandler}
             isLoading={loading}
+            mt={3}
           >
             Forgot Password
           </Button>
+          <Link
+            onClick={redirectToLogin}
+            color="grey"
+            fontWeight="semibold"
+            fontSize="md"
+            mt={3}
+            display="block"
+          >
+            Remeber now?
+          </Link>
         </FormControl>
       </Center>
     </VStack>

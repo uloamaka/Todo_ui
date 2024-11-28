@@ -32,10 +32,10 @@ type Props = {
 const ScrollableList: React.FC<Props> = ({ task, fetchTask }) => {
   const { todo, setTodo, selectedTask, setSelectedTask } = useTodoState();
 
-  const [category, setCategory] = useState('default');
-  const [content, setContent] = useState('');
-  const [status, setStatus] = useState('pending');
-  const [due_date, setDue_date] = useState('');
+  const [category, setCategory] = useState<string>('default');
+  const [content, setContent] = useState<string>('');
+  const [status, setStatus] = useState<string>('pending');
+  const [due_date, setDue_date] = useState<string | undefined>(undefined);
 
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -65,7 +65,6 @@ const ScrollableList: React.FC<Props> = ({ task, fetchTask }) => {
   const updateTask = async () => {
     setLoading(true);
     if (!selectedTask) return;
-    console.log(selectedTask);
     try {
       const config = {
         headers: {
@@ -73,13 +72,11 @@ const ScrollableList: React.FC<Props> = ({ task, fetchTask }) => {
         },
         withCredentials: true,
       };
-      console.log(category, content, status, due_date);
-      const { data } = await axios.put(
+      await axios.put(
         `/api/v1/todo/${selectedTask._id}/edit`,
         { category, content, status, due_date },
         config,
       );
-      setTodo(data);
       fetchTask();
       setLoading(false);
     } catch (error: any) {
